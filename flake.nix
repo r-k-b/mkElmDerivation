@@ -74,6 +74,13 @@
             snapshot = snapshot final.system;
           }).mkDotElmCommand ./mkElmDerivation/elm-hashes.json;
         };
+
+        makeDotElmDirectoryCmd = final: prev: {
+          makeDotElmDirectoryCmd = with prev; (import ./nix/lib.nix {
+            inherit allPackagesJsonPath lib stdenv;
+            snapshot = snapshot final.system;
+          }).makeDotElmCommand ./mkElmDerivation/elm-hashes.json;
+        };
       };
     }
     // flake-utils.lib.eachDefaultSystem (
