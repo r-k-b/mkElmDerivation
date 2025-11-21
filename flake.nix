@@ -48,7 +48,7 @@
           inherit stdenv lib allPackagesJsonPath elmHashesJsonPath;
           elm = elmPackages.elm;
           uglify-js = nodePackages.uglify-js;
-          snapshot = snapshot system;
+          snapshot = snapshot stdenv.hostPlatform.system;
         };
     in
     {
@@ -74,7 +74,7 @@
               inherit stdenv lib allPackagesJsonPath elmHashesJsonPath;
               elm = elmPackages.elm;
               elm-spa = elm-spa.packages.${system}.elmSpa;
-              snapshot = snapshot prev.system;
+              snapshot = snapshot prev.stdenv.hostPlatform.system;
             };
         };
 
@@ -83,21 +83,21 @@
             import ./nix/mkElmWatchDerivation.nix {
               inherit allPackagesJsonPath elmHashesJsonPath lib stdenv;
               elm-watch = elm-watch.packages.${system}.elm-watch;
-              snapshot = snapshot prev.system;
+              snapshot = snapshot prev.stdenv.hostPlatform.system;
             };
         };
 
         mkDotElmDirectoryCmd = final: prev: {
           mkDotElmDirectoryCmd = with prev; (import ./nix/lib.nix {
             inherit allPackagesJsonPath lib stdenv;
-            snapshot = snapshot prev.system;
+            snapshot = snapshot prev.stdenv.hostPlatform.system;
           }).mkDotElmCommand ./mkElmDerivation/elm-hashes.json;
         };
 
         makeDotElmDirectoryCmd = final: prev: {
           makeDotElmDirectoryCmd = with prev; (import ./nix/lib.nix {
             inherit allPackagesJsonPath lib stdenv;
-            snapshot = snapshot final.system;
+            snapshot = snapshot final.stdenv.hostPlatform.system;
           }).makeDotElmCommand ./mkElmDerivation/elm-hashes.json;
         };
       };
