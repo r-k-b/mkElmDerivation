@@ -35,7 +35,8 @@
         ./mkElmDerivation/elm-hashes.json;
 
       snapshot =
-        system: import ./src/snapshot/default.nix (nixpkgsFor.${system}.haskellPackages // { lib = nixpkgsFor.${system}.lib; });
+        system:
+        import ./src/snapshot/default.nix (nixpkgsFor.${system}.haskellPackages // { lib = nixpkgsFor.${system}.lib; });
 
       homepage =
         "https://github.com/jeslie0/mkElmDerivation";
@@ -52,8 +53,8 @@
         };
     in
     {
-      overlay =
-        builtins.trace "\"mkElmDerivation.overlay\" has been deprecated. Please use \"mkElmDerivation.overlays.mkElmDerivation\" instead." self.overlays.mkElmDerivation;
+      # overlay =
+      #   builtins.trace "\"mkElmDerivation.overlay\" has been deprecated. Please use \"mkElmDerivation.overlays.mkElmDerivation\" instead." self.overlays.mkElmDerivation;
 
       overlays = {
         # The default overlay is the union of the other overlays in
@@ -149,10 +150,10 @@
       # elmHasher = haskellPackages.callCabal2nix "elmHasher" ./src/elmHasher { };
       # snapshot = haskellPackages.callCabal2nix "snapshot" ./src/snapshot { };
 
-      defaultPackage =
-        forAllSystems (system:
-          builtins.trace "defaultPackage has been deprecated. Please use packages.default." self.packages.${system}.default
-        );
+      # defaultPackage =
+      #   forAllSystems (system:
+      #     builtins.trace "defaultPackage has been deprecated. Please use packages.default." self.packages.${system}.default
+      #   );
 
       checks =
         forAllSystems (system:
@@ -181,7 +182,7 @@
             }
         );
 
-      devShell =
+      devShells =
         forAllSystems (system:
           let
             pkgs =
@@ -189,8 +190,8 @@
 
             haskellPackages =
               pkgs.haskellPackages;
-          in
-            haskellPackages.shellFor {
+          in {
+            default = haskellPackages.shellFor {
               packages = p: [
                 self.packages.${system}.elmHasher
               ];
@@ -202,7 +203,8 @@
 
               # Enables Hoogle for the builtin packages.
               withHoogle = true;
-            }
+            };
+          }
         );
     };
 }
